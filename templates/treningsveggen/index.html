@@ -1,0 +1,28 @@
+{% load static %}
+
+<!doctype html>
+<html lang="en">
+{% include 'treningsveggen/head.html' %}
+<body>
+{% include 'treningsveggen/facebook.html' %}
+{% include 'treningsveggen/nav.html' %}
+
+<main role="main" class="container">
+<div class="content" id="content">
+{% include 'treningsveggen/errors.html' %}
+
+{% if user.is_authenticated %}
+	{% include 'workout/add.html' %}
+
+	{% include 'workout/tally.html' %}
+
+{% else %}
+	<h1 style="font-size: 35px">TRENINGSVEGGEN</h1>
+	<p>Det viktigste er ikke å vinne,<br />men å vinne over noen du kjenner</p>
+
+{% endif %}
+</div>
+</main>
+{% include 'treningsveggen/footer.html' %}
+</body>
+</html>

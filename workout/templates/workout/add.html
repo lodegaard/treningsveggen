@@ -1,0 +1,30 @@
+{% load static %}
+<script>
+  $( function() {
+    $( "#performed" ).datepicker({
+    		"dateFormat": "yy-mm-dd",
+    		"firstDay": 1,
+    }).datepicker("setDate", new Date());
+  });
+  $( function() {
+    $( "#registered" ).datepicker({
+    		"dateFormat": "yy-mm-dd",
+    		"firstDay": 1,
+    }).datepicker("setDate", new Date());
+  });
+</script>
+
+<form action="{% url 'workout:add' %}" method="post">
+<div class="form-group">
+{% csrf_token %}
+<select name="activity_type">
+{% for type in activity_types %}
+	<option value="{{ type.pk }}">{{ type }}</option>
+{% endfor %}
+</select>
+<input type="text" name="performed_date" size="11" id="performed" />
+<input type="hidden" name="registered" size="10" id="registered" />
+<input type="text" name="comment" size="20" placeholder="Kommentar" />
+<input type="submit" value="Legg til" />
+</div>
+</form>

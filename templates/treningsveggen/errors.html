@@ -1,0 +1,8 @@
+{% load static %}
+
+{% for message in error_messages %}
+	<div class="alert alert-danger" role="alert">{{ message }}</div>
+{% endfor %}
+{% for message in info_messages %}
+	<div class="alert alert-success" role="alert">{{ message }}</div>
+{% endfor %}

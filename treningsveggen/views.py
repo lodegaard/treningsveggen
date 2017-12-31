@@ -4,6 +4,8 @@ from math import ceil
 from django.http import HttpResponse
 from django.template import loader
 
+from django_facebook.api import get_persistent_graph
+
 from member.models import FacebookMember
 from workout.views import get_activityTypes
 
@@ -39,7 +41,7 @@ def index(request):
         'activity_types': get_activityTypes(),
         'nor_month': translate_month_to_nor(today.month),
         'workouts': workouts,
-        'max_workouts': (ceil(max(workouts.values())/6)*2)/10
+        'tally_scale': (ceil(max(workouts.values())/6)*2)/10,
     }
     return HttpResponse(template.render(context, request))
     

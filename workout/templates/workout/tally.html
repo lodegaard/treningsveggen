@@ -10,8 +10,7 @@
 window.onload = function drawGraph()
 {
 	var	margin = {top: 10, right: 10, bottom: 50, left: 60},
-		//width = document.getElementById("content").offsetWidth*{{ max_workouts }} - margin.left - margin.right,
-		width = document.getElementById("content").offsetWidth*{{ max_workouts }},
+		width = document.getElementById("content").offsetWidth*{{ tally_scale }},
 		height = 300 - margin.top - margin.bottom;
 	var data =
 		[

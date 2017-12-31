@@ -1,8 +1,9 @@
+from django.conf import settings
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse, HttpResponseRedirect
 from django.template import loader
-from django.views import generic
-from django.utils.decorators import method_decorator
+
+from django_facebook.api import get_persistent_graph
 
 from .models import ActivityType, Workout
 
@@ -10,17 +11,6 @@ from datetime import date, datetime
 
 import logging
 log = logging.getLogger(__name__)
-
-# @method_decorator(login_required, name='get')
-# class ListWorkouts(generic.ListView):
-#     def get(self, request, *args, **kwargs):
-#         member = request.user
-#         
-#         template = loader.get_template('workout/list.html')
-#         context = {
-#             'workouts': member.workout_set
-#         }
-#         return HttpResponse(template.render(context, request))
 
 def get_activityTypes():
     return ActivityType.objects.all().exclude(name__contains='activity')
@@ -47,6 +37,8 @@ def add_workout(request):
     try:
         log.error("Received add workout form {}".format(request.POST['performed_date']))
         template = loader.get_template('treningsveggen/index.html')
+        graph = get_persistent_graph(request)
+        fb_group_id = settings.TRENINGSVEGGEN_FB_GROUP_ID
         
         activity_type = ActivityType.objects.get(pk=request.POST['activity_type'])
         performed_date = request.POST['performed_date'].split('-')
@@ -56,6 +48,10 @@ def add_workout(request):
         
         newWorkout = Workout(member=request.user, performed_date=performed, registered_date=registered, primary_type=activity_type, comment=comment)
         newWorkout.save()
+        
+        fb_message = '{}. {} - {}'.format(newWorkout.number_in_week(), str(newWorkout), newWorkout.comment)
+        graph.set('/{}/feed'.format(fb_group_id), {"message":fb_message})
+        
     except:
         context = {
                     'activity_types': get_activityTypes(),
@@ -65,7 +61,7 @@ def add_workout(request):
     else:
         context = {
             'activity_types': get_activityTypes(),
-            'info_messages': ['{}. {}'.format(newWorkout.number_in_week(), str(newWorkout))]
+            'info_messages': [fb_message]
         }
         return HttpResponse(template.render(context, request))
 

@@ -1,15 +1,11 @@
-<nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
+<nav class="navbar navbar-expand-md navbar-light fixed-top">
 	<div class="container">
-    <a class="navbar-brand" href="http://treningsveggen.no">Treningsveggen</a>
-    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsExampleDefault" aria-controls="navbarsExampleDefault" aria-expanded="false" aria-label="Toggle navigation">
-      <span class="navbar-toggler-icon"></span>
-    </button>
-	
+	    <a class="navbar-brand" href="http://treningsveggen.no">Treningsveggen</a>
+	    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsExampleDefault" aria-controls="navbarsExampleDefault" aria-expanded="false" aria-label="Toggle navigation">
+	      <span class="navbar-toggler-icon"></span>
+	    </button>
 	    <div class="collapse navbar-collapse" id="navbarsExampleDefault">
 	      <ul class="navbar-nav mr-auto">
-<!-- 	        <li class="nav-item active"> -->
-<!-- 	          <a class="nav-link" href="#">Hjem <span class="sr-only">(current)</span></a> -->
-<!-- 	        </li> -->
 	        <li class="nav-item">
 	            <a class="nav-link" href="{% url 'about' %}">Om</a>
 	        </li>
@@ -23,12 +19,12 @@
 	        <li class="nav-item active">
 	        		<!-- <i class="fa fa-user"></i>-->
 	           	{% if not user.is_authenticated %}
-	                <form action="{% url 'facebook_connect' %}?facebook_login=1" method="post">
+	                <form action="{% url 'facebook_connect' %}?facebook_login=1" method="post" class="form-inline">
 					    <input type="hidden" value="{{ request.path }}" name="next" />
 					    <input type="hidden" value="{{ request.path }}" name="register_next" />
 					    <input type="hidden" value="{{ request.path }}" name="error_next" />
 					    {% csrf_token %}
-					    <button type="button" onclick="F.connect(this.parentNode); return false;" class="btn btn-link" style="color: rgba(255,255,255,.5)">
+					    <button type="button" onclick="F.connect(this.parentNode); return false;" class="btn btn-link" style="color: rgba(0,0,0,.9)">
 					    <i class="fa fa-user"></i> Logg inn
 					    <!--  <input onclick="F.connect(this.parentNode); return false;" type="button" class="" value="Logg inn" />-->
 					    </button>

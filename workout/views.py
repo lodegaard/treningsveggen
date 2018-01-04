@@ -1,6 +1,6 @@
 from django.conf import settings
 from django.contrib.auth.decorators import login_required
-from django.http import HttpResponse, HttpResponseRedirect
+from django.http import HttpResponse
 from django.template import loader
 
 from django_facebook.api import get_persistent_graph
@@ -18,6 +18,7 @@ def get_activityTypes():
 def get_workouts():
     return Workout.objects.all()
 
+@login_required(login_url='/')
 def list_workouts(request):
     today = datetime.now()
     member = request.user
@@ -29,8 +30,7 @@ def list_workouts(request):
     }
     return HttpResponse(template.render(context, request))
 
-
-# Create your views here.
+@login_required(login_url='/')
 def add_workout(request):
     """
     """

@@ -22,6 +22,7 @@ from . import views
 urlpatterns = [
     url(r'^$', views.index, name='index'),
     url(r'^about/$', TemplateView.as_view(template_name='treningsveggen/about.html'), name='about'),
+    url(r'^login/', views.login, name='login'),
     url(r'^workout/', include('workout.urls')),
     url(r'^admin/', admin.site.urls),
     url(r'^facebook/', include('django_facebook.urls')),

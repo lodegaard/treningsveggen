@@ -25,7 +25,7 @@ class Workout(models.Model):
     )
     
     performed_date = models.DateField('Performed')
-    registered_date = models.DateField('Registered')
+    registered_date = models.DateTimeField('Registered')
     
     primary_type = models.ForeignKey(
         ActivityType,

@@ -2,6 +2,7 @@ from django.conf import settings
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse
 from django.template import loader
+from django.utils import timezone
 
 from django_facebook.api import get_persistent_graph
 
@@ -35,8 +36,9 @@ def add_workout(request):
     """
     """
     try:
-        log.error("Received add workout form {}".format(request.POST['performed_date']))
         template = loader.get_template('treningsveggen/index.html')
+        log.error("Received add workout form {}".format(request.POST))
+        
         graph = get_persistent_graph(request)
         fb_group_id = settings.TRENINGSVEGGEN_FB_GROUP_ID
         
@@ -44,14 +46,16 @@ def add_workout(request):
         performed_date = request.POST['performed_date'].split('-')
         comment = request.POST['comment']
         performed = date(int(performed_date[0]), int(performed_date[1]), int(performed_date[2]))
-        registered = date.today()
+        registered = timezone.now()
         
         newWorkout = Workout(member=request.user, performed_date=performed, registered_date=registered, primary_type=activity_type, comment=comment)
         newWorkout.save()
         
         fb_message = '{}. {} - {}'.format(newWorkout.number_in_week(), str(newWorkout), newWorkout.comment)
-        graph.set('/{}/feed'.format(fb_group_id), {"message":fb_message})
-        
+        post_to_fb = request.POST.get('post_to_fb', default=False)
+        if post_to_fb:
+            graph.set('/{}/feed'.format(fb_group_id), {"message":fb_message})
+            
     except:
         context = {
                     'activity_types': get_activityTypes(),
@@ -59,6 +63,7 @@ def add_workout(request):
                 }
         return HttpResponse(template.render(context, request))    
     else:
+        
         context = {
             'activity_types': get_activityTypes(),
             'info_messages': [fb_message]

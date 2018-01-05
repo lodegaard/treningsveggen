@@ -42,6 +42,7 @@ class Workout(models.Model):
     )
      
     comment = models.CharField(max_length=500)
+    fb_post_id = models.CharField(max_length=200, blank=True, null=True)
     
     def __str__(self):
         if self.secondary_type is not None:

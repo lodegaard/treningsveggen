@@ -39,9 +39,6 @@ def add_workout(request):
         template = loader.get_template('treningsveggen/index.html')
         log.error("Received add workout form {}".format(request.POST))
         
-        graph = get_persistent_graph(request)
-        fb_group_id = settings.TRENINGSVEGGEN_FB_GROUP_ID
-        
         activity_type = ActivityType.objects.get(pk=request.POST['activity_type'])
         performed_date = request.POST['performed_date'].split('-')
         comment = request.POST['comment']
@@ -54,15 +51,23 @@ def add_workout(request):
         fb_message = '{}. {} - {}'.format(newWorkout.number_in_week(), str(newWorkout), newWorkout.comment)
         post_to_fb = request.POST.get('post_to_fb', default=False)
         if post_to_fb:
-            graph.set('/{}/feed'.format(fb_group_id), {"message":fb_message})
-            
+            try:
+                graph = get_persistent_graph(request)
+                fb_group_id = settings.TRENINGSVEGGEN_FB_GROUP_ID
+                post_result = graph.set('/{}/feed'.format(fb_group_id), {"message":fb_message})
+                newWorkout.fb_post_id = post_result
+            except:
+                context = {
+                    'info_messages': [fb_message],
+                    'error_messages': ['Unable to post to Facebook, session expired. Please log in again']
+                }
+                return HttpResponse(template.render(context, request)) 
     except:
         context = {
-                    'error_messages': ['Something went wrong during saving']
-                }
+            'error_messages': ['Something went wrong during saving']
+        }
         return HttpResponse(template.render(context, request))    
     else:
-        
         context = {
             'info_messages': [fb_message]
         }

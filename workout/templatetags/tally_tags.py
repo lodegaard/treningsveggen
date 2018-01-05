@@ -9,7 +9,7 @@ register = template.Library()
 @register.inclusion_tag('workout/tally_workouts.html')
 def tally_workouts():
     today = datetime.now()
-    members = FacebookMember.objects.all()
+    members = FacebookMember.objects.all().order_by('first_name')
     
     workouts = {}
     for member in members:

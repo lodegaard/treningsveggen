@@ -58,14 +58,12 @@ def add_workout(request):
             
     except:
         context = {
-                    'activity_types': get_activityTypes(),
                     'error_messages': ['Something went wrong during saving']
                 }
         return HttpResponse(template.render(context, request))    
     else:
         
         context = {
-            'activity_types': get_activityTypes(),
             'info_messages': [fb_message]
         }
         return HttpResponse(template.render(context, request))

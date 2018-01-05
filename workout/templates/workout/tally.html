@@ -1,4 +1,7 @@
 {% load static %}
+{% load tally_tags %}
+{% tally_scale as scale %}
+{% get_month as nor_month %}
 <!-- Tallychart stuff -->
 <link rel="stylesheet" href="{% static 'treningsveggen/css/tallyChart.css' %}">
 <script src="https://d3js.org/d3.v3.min.js"></script>
@@ -10,29 +13,26 @@
 window.onload = function drawGraph()
 {
 	var	margin = {top: 10, right: 10, bottom: 50, left: 60},
-		width = document.getElementById("content").offsetWidth*{{ tally_scale }},
+		width = document.getElementById("content").offsetWidth*{{ scale }},
 		height = 300 - margin.top - margin.bottom;
 	var data =
-		[
-		{% for member, num in workouts.items %}
-		    { group: "{{ member }}", count: {{ num }} },
-	    {% endfor %}
-		];
-	console.log(width, height)
-		var chart_options = {
-	        container: "#TallyChart",
-	        width: width,
-	        height: height,
-	        margin: margin,
-	        bar_height: 25,
-	        bar_width: 5,
-	        break_at_count : 5,
-	        normal_tick_color : "#000000",
-	        break_tick_color : "#000000",
-	        rotate_normal_tick_degrees: 5
-	    };
+	[
+		{% tally_workouts %}
+	];
+	var chart_options = {
+        container: "#TallyChart",
+        width: width,
+        height: height,
+        margin: margin,
+        bar_height: 25,
+        bar_width: 5,
+        break_at_count : 5,
+        normal_tick_color : "#000000",
+        break_tick_color : "#000000",
+        rotate_normal_tick_degrees: 5
+    };
 	
-	    TallyChart(data,chart_options);
+    TallyChart(data,chart_options);
 }
 </script>
 <div id="TallyChart"></div>

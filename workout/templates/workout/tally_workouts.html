@@ -1,0 +1,3 @@
+{% for member, num in tally_workouts.items %}
+    { group: "{{ member }}", count: {{ num }} },
+{% endfor %}

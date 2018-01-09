@@ -14,9 +14,15 @@
 {% if user.is_authenticated %}
 {{ user.first_name }} har {{ number_of_workouts }} streker denne uka
 
-<ul class="text-left">
+<ul class="list-group text-left">
 {% for workout in workout_list %}
-	<li>{{workout.performed_date}}: {{ workout }} --<i>{{ workout.comment }}</i></li>
+<form action="{% url 'workout:delete' workout.pk %}" method="post">
+{% csrf_token %}
+	<li class="list-group-item list-group-item-light d-flex justify-content-between">
+		{{workout.performed_date}}: {{ workout }} --<i>{{ workout.comment }}</i>
+		<input type="submit" class="btn btn-danger btn-sm" style="padding: 0rem .2rem" value="Slett">
+	</li>
+</form>
 {% endfor %}
 </ul>
 {% else %}

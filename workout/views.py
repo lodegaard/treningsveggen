@@ -1,6 +1,7 @@
 from django.conf import settings
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse
+from django.shortcuts import get_object_or_404
 from django.template import loader
 from django.utils import timezone
 
@@ -27,7 +28,7 @@ def list_workouts(request):
     template = loader.get_template('workout/list.html')
     context = {
         'number_of_workouts': member.workout_set.filter(performed_date__week=today.isocalendar()[1]).count(),
-        'workout_list': member.workout_set.all().order_by('-performed_date')[:30]
+        'workout_list': member.workout_set.all().order_by('-performed_date')[:50]
     }
     return HttpResponse(template.render(context, request))
 
@@ -72,4 +73,32 @@ def add_workout(request):
             'info_messages': [fb_message]
         }
         return HttpResponse(template.render(context, request))
+
+@login_required(login_url='/')
+def delete_workout(request, workout_id):
+    template = loader.get_template('workout/list.html')
+    member = request.user
+    today = datetime.now()    
+    
+    workout_to_delete = get_object_or_404(Workout, pk=workout_id)
+    
+    try:
+        workout_to_delete.delete()
+    except:
+        context = {
+            'error_messages': ['Unable to delete workout {}'.format(workout_id)],
+            'number_of_workouts': member.workout_set.filter(performed_date__week=today.isocalendar()[1]).count(),
+            'workout_list': member.workout_set.all().order_by('-performed_date')[:50]
+        }
+        return HttpResponse(template.render(context, request))
+    
+    member = request.user
+
+    context = {
+        'info_messages': ['Deleted workout {}'.format(workout_id)],
+        'number_of_workouts': member.workout_set.filter(performed_date__week=today.isocalendar()[1]).count(),
+        'workout_list': member.workout_set.all().order_by('-performed_date')[:50]
+    }
+    return HttpResponse(template.render(context, request))
+
 
